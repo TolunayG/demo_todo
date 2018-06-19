@@ -8,12 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 public class HelloController
 {
-    @Autowired
-    private UserRepository repository;
-    
-    @GetMapping("/currency-exchange/from/{id}/to/{email}")
-    public String index(@PathVariable String id, @PathVariable String email) {
-        repository.save(new UserEntity(0L, "asd"));
-        return "" + repository.count();
+    @GetMapping("/")
+    public String index() {
+        return "Hello";
     }
 }
