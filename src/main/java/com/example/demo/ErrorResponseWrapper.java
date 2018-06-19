@@ -8,6 +8,10 @@ public class ErrorResponseWrapper
     public ErrorResponseWrapper(int code, String reason) {
         this.code = code;
         this.reason = reason;
+	}
+	
+	public ErrorResponseWrapper(String reason) {
+        this(420, reason);
     }
 
     public String getReason() {
