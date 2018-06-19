@@ -13,7 +13,7 @@ public class HelloController
     
     @GetMapping("/currency-exchange/from/{id}/to/{email}")
     public String index(@PathVariable String id, @PathVariable String email) {
-        repository.save(new UserEntity(0L, "asd"));
+        repository.save(new UserEntity(0L, "asdasd"));
         return "" + repository.count();
     }
 }
