@@ -1,5 +1,7 @@
 package com.example.demo;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -70,16 +72,20 @@ public class TodoController
     UserRepository userRepository;
 
     @PutMapping("/api/todo/add")
-    public Object add(Long id, @RequestBody AddRequestBodyWrapper body, HttpServletResponse response)
+    public Object add(long id, @RequestBody AddRequestBodyWrapper body, HttpServletResponse response)
     {
-        if (userRepository.findById(id) == null) {
+        Optional<UserEntity> user = userRepository.findById(id);
+
+        if (user == null || user.get() == null) {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
-        if (body.getDueDate() < System.currentTimeMillis()){
+
+        if (body.getDueDate() < System.currentTimeMillis()) {
             response.setStatus(420);
             return new ErrorResponseWrapper("Due date cannot be a past date");
         }
+
         TodoEntity todoEntity = new TodoEntity();
         todoEntity.setId(0L);
         todoEntity.setText(body.getText());
@@ -88,32 +94,44 @@ public class TodoController
         todoEntity.setStatus(false);
         todoRepository.save(todoEntity);
 
-        userRepository.findById(id).get().getTodoList().add(todoEntity);
+        UserEntity userEntity = user.get();
+        userEntity.getTodoList().add(todoEntity);
+        userRepository.save(userEntity);
 
         return "success";
     }
 
     @PostMapping("/api/todo/edit")
-    public Object edit(Long id, @RequestBody EditRequestBodyWrapper body, HttpServletResponse response)
+    public Object edit(long id, @RequestBody EditRequestBodyWrapper body, HttpServletResponse response)
     {
-        if (userRepository.findById(id) == null)
+        Optional<UserEntity> user = userRepository.findById(id);
+        Optional<TodoEntity> todo = todoRepository.findById(body.getId());
+
+        if (user == null || user.get() == null)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
-        if (todoRepository.findById(body.getId()) == null)
+
+        if (todo == null || todo.get() == null)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
         }
+        
         if (body.getDueDate() < System.currentTimeMillis())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Due date cannot be a past date");
         }
+
         TodoEntity editedTodoEntity = todoRepository.findById(body.getId()).get();
-        editedTodoEntity.setText(body.getText());
-        editedTodoEntity.setDueDate(body.getDueDate());
+        
+        if (body.getText() != null)
+            editedTodoEntity.setText(body.getText());
+        if (body.getDueDate() != null)
+            editedTodoEntity.setDueDate(body.getDueDate());
+
         todoRepository.save(editedTodoEntity);
 
         return "success";
@@ -122,17 +140,25 @@ public class TodoController
     @DeleteMapping("/api/todo/delete")
     public Object delete(Long id, @RequestBody DeleteRequestBodyWrapper body, HttpServletResponse response)
     {
-        if (userRepository.findById(id) == null)
+        Optional<UserEntity> user = userRepository.findById(id);
+
+        if (user == null || user.get() == null)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
+
         if (todoRepository.findById(body.getId()) == null)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
         }
+
         todoRepository.deleteById(body.getId());
+
+        UserEntity userEntity = user.get();
+        userEntity.getTodoList().removeIf((x) -> x.getId() == body.getId());
+        userRepository.save(userEntity);
 
         return "success";
     }
@@ -145,11 +171,13 @@ public class TodoController
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
+
         if (todoRepository.findById(body.getId()) == null)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
         }
+
         TodoEntity editedTodoEntity = todoRepository.findById(body.getId()).get();
         editedTodoEntity.setStatus(body.getStatus());
         todoRepository.save(editedTodoEntity);
@@ -165,11 +193,13 @@ public class TodoController
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
+        
         if (to < from)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("To < from");
         }
+
         return userRepository.findById(id).get().getTodoList();
     }
 }
