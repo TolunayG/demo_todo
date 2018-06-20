@@ -91,13 +91,13 @@ public class UserController
         String email = body.getEmail();
         String password = body.getPassword();
 
-        if (email == null) {
+        if (email == null || email.length() == 0) {
             response.setStatus(420);
-            return new ErrorResponseWrapper("email is null");
+            return new ErrorResponseWrapper("email is null or empty");
         }
-        if (password == null) {
+        if (password == null || password.length() == 0) {
             response.setStatus(420);
-            return new ErrorResponseWrapper("password is null");
+            return new ErrorResponseWrapper("password is null or empty");
         }
 
         UserEntity user = userRepository.findByEmail(email);
