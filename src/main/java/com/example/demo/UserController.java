@@ -86,7 +86,7 @@ public class UserController
         if (user == null)
             return new ErrorResponseWrapper("No such email");
         
-        if (user.getPassword().equals(body.getPassword()))
+        if (!user.getPassword().equals(body.getPassword()))
             return new ErrorResponseWrapper("Password is incorrect.");
 
         LoginResponseBodyWrapper responseBodyWrapper = new LoginResponseBodyWrapper();
