@@ -120,6 +120,6 @@ public class UserController
         user.setPassword(body.getPassword());
         userRepository.save(user);
 
-        return "";
+        return "success";
     }
 }
