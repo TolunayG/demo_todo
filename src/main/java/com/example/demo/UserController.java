@@ -119,7 +119,6 @@ public class UserController
         user.setId(0L);
         user.setEmail(body.getEmail());
         user.setPassword(body.getPassword());
-
         userRepository.save(user);
 
         return "";
