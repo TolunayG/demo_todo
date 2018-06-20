@@ -1,47 +1,38 @@
 package com.example.demo;
 
-import org.springframework.web.bind.annotation.RestController;
-
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-class LoginRequestBodyWrapper {
-
+class LoginRequestBodyWrapper
+{
     private String email;
     private String password;
 
 	public String getEmail() {
 		return email;
 	}
-
 	public String getPassword() {
 		return password;
 	}
-
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
- 
 }
 
-class LoginResponseBodyWrapper {
-
+class LoginResponseBodyWrapper
+{
     private long id;
 
 	public long getId() {
 		return id;
 	}
-
 	public void setId(long id) {
 		this.id = id;
 	}
