@@ -8,16 +8,11 @@ import javax.persistence.Id;
 @Entity
 public class TodoEntity
 {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
     private Long id;
-
     private String text;
-
     private boolean status;
-
     private Long creationDate;
-
     private Long dueDate;
 
     public Long getId() { return id; }
