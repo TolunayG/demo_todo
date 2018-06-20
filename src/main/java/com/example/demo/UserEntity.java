@@ -14,11 +14,9 @@ public class UserEntity
     @Id
     @GeneratedValue
     private Long id;
-
-    @Column(name="email")
+    
     private String email;
 
-    @Column(name="password")
     private String password;
 
     @OneToMany(targetEntity = TodoEntity.class )
