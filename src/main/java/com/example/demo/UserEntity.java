@@ -2,7 +2,6 @@ package com.example.demo;
 
 import java.util.List;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -14,12 +13,12 @@ public class UserEntity
     @Id
     @GeneratedValue
     private Long id;
-    
+
     private String email;
 
     private String password;
 
-    @OneToMany(targetEntity = TodoEntity.class )
+    @OneToMany(targetEntity = TodoEntity.class)
     private List<TodoEntity> todoList;
 
     public Long getId() { return id; }
