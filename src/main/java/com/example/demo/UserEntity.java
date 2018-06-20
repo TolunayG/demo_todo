@@ -19,7 +19,7 @@ public class UserEntity
 
     private String password;
 
-    @OneToMany(targetEntity = TodoEntity.class )
+    @OneToMany(targetEntity = TodoEntity.class)
     private List<TodoEntity> todoList;
 
     public Long getId() { return id; }
