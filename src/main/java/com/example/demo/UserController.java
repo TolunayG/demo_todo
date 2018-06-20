@@ -73,7 +73,8 @@ public class UserController
     UserRepository userRepository;
 
     @PostMapping("/api/user/login")
-    public Object login(@RequestBody LoginRequestBodyWrapper body) {
+    public Object login(@RequestBody LoginRequestBodyWrapper body)
+    {
         if (body.getEmail() == null)
             return new ErrorResponseWrapper("Email cannot be empty.");
         
@@ -99,12 +100,20 @@ public class UserController
         String email = body.getEmail();
         String password = body.getPassword();
 
-        if (email == null) return new ErrorResponseWrapper("email is null");
-        if (password == null) return new ErrorResponseWrapper("password is null");
+        if (email == null) {
+            response.setStatus(420);
+            return new ErrorResponseWrapper("email is null");
+        }
+        if (password == null) {
+            response.setStatus(420);
+            return new ErrorResponseWrapper("password is null");
+        }
 
         UserEntity user = userRepository.findByEmail(email);
-        if (user != null)
+        if (user != null) {
+            response.setStatus(420);
             return new ErrorResponseWrapper("email already used");
+        }
         
         user = new UserEntity();
         user.setId(0L);
@@ -113,6 +122,6 @@ public class UserController
 
         userRepository.save(user);
 
-        return "{}";
+        return "";
     }
 }
