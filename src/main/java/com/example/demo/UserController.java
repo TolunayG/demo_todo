@@ -73,22 +73,30 @@ public class UserController
     UserRepository userRepository;
 
     @PostMapping("/api/user/login")
-    public Object login(@RequestBody LoginRequestBodyWrapper body)
+    public Object login(@RequestBody LoginRequestBodyWrapper body, HttpServletResponse response)
     {
-        if (body.getEmail() == null)
+        if (body.getEmail() == null) {
+            response.setStatus(420);
             return new ErrorResponseWrapper("Email cannot be empty.");
+        }
         
         UserEntity user = userRepository.findByEmail(body.getEmail());
 
-        if (body.getPassword() == null)
+        if (body.getPassword() == null) {
+            response.setStatus(420);
             return new ErrorResponseWrapper("Password cannot be empty.");
-
-        if (user == null)
+        }
+            
+        if (user == null) {
+            response.setStatus(420);
             return new ErrorResponseWrapper("No such email");
-        
-        if (!user.getPassword().equals(body.getPassword()))
+        }
+                    
+        if (!user.getPassword().equals(body.getPassword())) {
+            response.setStatus(420);
             return new ErrorResponseWrapper("Password is incorrect.");
-
+        }
+            
         LoginResponseBodyWrapper responseBodyWrapper = new LoginResponseBodyWrapper();
         responseBodyWrapper.setId(user.getId());
         return responseBodyWrapper;
