@@ -29,7 +29,7 @@ class EditRequestBodyWrapper
     private String text;
     private Long dueDate;
 
-    public Long getId() { return id;
+    public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getText() { return text; }
@@ -44,7 +44,7 @@ class DeleteRequestBodyWrapper
 {
     private Long id;
 
-    public Long getId() { return id;
+    public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 }
 
@@ -53,10 +53,10 @@ class CheckRequestBodyWrapper
     private Long id;
     private boolean status;
 
-    public Long getId() { return id;
+    public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public boolean getStatus() { return status;
+    public boolean getStatus() { return status; }
     public void setStatus(boolean status) { this.status = status; }
 }
 
@@ -72,7 +72,7 @@ public class TodoController
     @PutMapping("/api/todo/add")
     public Object add(Long id, @RequestBody AddRequestBodyWrapper body, HttpServletResponse response)
     {
-        if (userRepository.findById(id) == null){
+        if (userRepository.findById(id) == null) {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
