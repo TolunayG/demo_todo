@@ -178,7 +178,7 @@ public class TodoController
     public Object delete(Long id, @RequestBody DeleteRequestBodyWrapper body, HttpServletResponse response)
     {
         Optional<UserEntity> user = userRepository.findById(id);
-        Optional<TodoEntity> todo = todoRepository.findById(id);
+        Optional<TodoEntity> todo = todoRepository.findById(body.getId());
 
         if (!user.isPresent())
         {
@@ -205,7 +205,7 @@ public class TodoController
     public Object check(Long id, @RequestBody CheckRequestBodyWrapper body, HttpServletResponse response)
     {
         Optional<UserEntity> user = userRepository.findById(id);
-        Optional<TodoEntity> todo = todoRepository.findById(id);
+        Optional<TodoEntity> todo = todoRepository.findById(body.getId());
 
         if (!user.isPresent())
         {
