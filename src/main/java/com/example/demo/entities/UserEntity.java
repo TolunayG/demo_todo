@@ -17,7 +17,7 @@ public class UserEntity
     private String password;
 
     @OneToMany(mappedBy = "assignedUser")
-    private List<TodoEntity> todoList = new ArrayList();
+    private List<TodoEntity> todoList = new ArrayList<>();
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -43,7 +43,7 @@ public class UserEntity
     @Override
     public boolean equals(Object obj) {
         if (obj == null) return false;
-        if (obj instanceof UserEntity == false) return false;
+        if (!(obj instanceof UserEntity)) return false;
         UserEntity other = (UserEntity) obj;
         return this.id == other.id;
     }
