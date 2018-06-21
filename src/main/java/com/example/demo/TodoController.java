@@ -96,7 +96,7 @@ public class TodoController
         todoRepository.save(todoEntity);
 
         UserEntity userEntity = user.get();
-        userEntity.getTodoList().add(todoEntity);
+        userEntity.addTodo(todoEntity);
         userRepository.save(userEntity);
 
         return "success";

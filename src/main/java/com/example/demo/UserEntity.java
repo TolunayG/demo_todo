@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,17 +15,14 @@ public class UserEntity
 {
     @Id
     @GeneratedValue
-    @Column(name = "id")
     private Long id;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "password")
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<TodoEntity> todoList;
+    @OneToMany(mappedBy = "assignedUser")
+    private List<TodoEntity> todoList = new ArrayList();
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -37,4 +35,20 @@ public class UserEntity
 
     public List<TodoEntity> getTodoList() { return todoList; }
     public void setTodoList(List<TodoEntity> todoList) { this.todoList = todoList; }
+
+    public void addTodo(TodoEntity todo) {
+        this.todoList.add(todo);
+    }
+
+    public void removeTodo(TodoEntity todo) {
+        this.todoList.remove(todo);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj instanceof UserEntity == false) return false;
+        UserEntity other = (UserEntity) obj;
+        return this.id == other.id;
+    }
 }

@@ -12,24 +12,21 @@ public class TodoEntity
 {
     @Id
     @GeneratedValue
-    @Column(name = "id")
     private Long id;
     
-    @Column(name = "text")
     private String text;
     
-    @Column(name = "status")
     private Boolean status;
 
-    @Column(name = "creationDate")
     private Long creationDate;
 
-    @Column(name = "dueDate")
     private Long dueDate;
 
+    //@ManyToOne
+    //@Column(name = "user")
+    //@JoinColumn(name = "id")
+    //private UserEntity user;
     @ManyToOne
-    @Column(name = "user")
-    @JoinColumn(name = "id")
     private UserEntity user;
 
     public UserEntity getUser() { return user; }
@@ -49,4 +46,12 @@ public class TodoEntity
 
     public Long getDueDate() { return dueDate; }
     public void setDueDate(Long dueDate) { this.dueDate = dueDate; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) return false;
+        if (obj instanceof TodoEntity == false) return false;
+        TodoEntity other = (TodoEntity) obj;
+        return this.id == other.id;
+    }
 }
