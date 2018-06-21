@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.util.Date;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 class AddRequestBodyWrapper
 {
     private String text;
-    private Long dueDate;
+    private Date dueDate;
 
     String getText() {
         return text;
@@ -25,11 +26,11 @@ class AddRequestBodyWrapper
         this.text = text;
     }
 
-    Long getDueDate() {
+    Date getDueDate() {
         return dueDate;
     }
 
-    void setDueDate(Long dueDate) {
+    void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 }
@@ -38,7 +39,7 @@ class EditRequestBodyWrapper
 {
     private Long id;
     private String text;
-    private Long dueDate;
+    private Date dueDate;
 
     Long getId() {
         return id;
@@ -56,11 +57,11 @@ class EditRequestBodyWrapper
         this.text = text;
     }
 
-    Long getDueDate() {
+    Date getDueDate() {
         return dueDate;
     }
 
-    void setDueDate(Long dueDate) {
+    void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
 }
@@ -119,7 +120,7 @@ public class TodoController
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
 
-        if (body.getDueDate() < System.currentTimeMillis()) {
+        if (body.getDueDate().getTime() < System.currentTimeMillis()) {
             response.setStatus(420);
             return new ErrorResponseWrapper("Due date cannot be a past date");
         }
@@ -127,7 +128,6 @@ public class TodoController
         TodoEntity todoEntity = new TodoEntity();
         todoEntity.setText(body.getText());
         todoEntity.setDueDate(body.getDueDate());
-        todoEntity.setCreationDate(System.currentTimeMillis());
         todoEntity.setStatus(false);
         todoEntity = todoRepository.save(todoEntity);
 
@@ -156,7 +156,7 @@ public class TodoController
             return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
         }
         
-        if (body.getDueDate() < System.currentTimeMillis())
+        if (body.getDueDate().getTime() < System.currentTimeMillis())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Due date cannot be a past date");
@@ -227,7 +227,7 @@ public class TodoController
     }
 
     @GetMapping("/api/todo/list")
-    public Object list(Long id, Long from, Long to, HttpServletResponse response)
+    public Object list(Long id, Date from, Date to, HttpServletResponse response)
     {
         Optional<UserEntity> user = userRepository.findById(id);
 

@@ -1,6 +1,9 @@
 package com.example.demo.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class TodoEntity
@@ -13,9 +16,11 @@ public class TodoEntity
     
     private Boolean status;
 
-    private Long creationDate;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date creationDate;
 
-    private Long dueDate;
+    @Temporal(value = TemporalType.TIMESTAMP)
+    private Date dueDate;
 
     //@ManyToOne
     //@Column(name = "assignedUser")
@@ -24,6 +29,7 @@ public class TodoEntity
     @ManyToOne
     private UserEntity assignedUser;
 
+    @JsonIgnore
     public UserEntity getAssignedUser() { return assignedUser; }
     public void setAssignedUser(UserEntity assignedUser) { this.assignedUser = assignedUser; }
 
@@ -36,11 +42,11 @@ public class TodoEntity
     public Boolean getStatus() { return status; }
     public void setStatus(Boolean status) { this.status = status; }
 
-    public Long getCreationDate() { return creationDate; }
-    public void setCreationDate(Long creationDate) { this.creationDate = creationDate; }
+    public Date getCreationDate() { return creationDate; }
+    public void setCreationDate(Date creationDate) { this.creationDate = creationDate; }
 
-    public Long getDueDate() { return dueDate; }
-    public void setDueDate(Long dueDate) { this.dueDate = dueDate; }
+    public Date getDueDate() { return dueDate; }
+    public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
 
     @Override
     public boolean equals(Object obj) {
@@ -48,5 +54,10 @@ public class TodoEntity
         if (obj instanceof TodoEntity == false) return false;
         TodoEntity other = (TodoEntity) obj;
         return this.id == other.id;
+    }
+
+    @PrePersist
+    public void prePersist(){
+        this.creationDate = new Date();
     }
 }

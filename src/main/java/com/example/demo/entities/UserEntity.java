@@ -33,6 +33,7 @@ public class UserEntity
 
     public void addTodo(TodoEntity todo) {
         this.todoList.add(todo);
+        todo.setAssignedUser(this);
     }
 
     public void removeTodo(TodoEntity todo) {
