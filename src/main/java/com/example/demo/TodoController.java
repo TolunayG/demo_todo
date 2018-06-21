@@ -76,7 +76,7 @@ public class TodoController
     {
         Optional<UserEntity> user = userRepository.findById(id);
 
-        if (user == null || user.get() == null) {
+        if (user == null || !user.isPresent() || user.get() == null) {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
@@ -86,8 +86,9 @@ public class TodoController
             return new ErrorResponseWrapper("Due date cannot be a past date");
         }
 
+        long newId = IdGenerator.getNextValue();
         TodoEntity todoEntity = new TodoEntity();
-        todoEntity.setId(0L);
+        todoEntity.setId(newId);
         todoEntity.setText(body.getText());
         todoEntity.setDueDate(body.getDueDate());
         todoEntity.setCreationDate(System.currentTimeMillis());
@@ -107,7 +108,7 @@ public class TodoController
         Optional<UserEntity> user = userRepository.findById(id);
         Optional<TodoEntity> todo = todoRepository.findById(body.getId());
 
-        if (user == null || user.get() == null)
+        if (user == null || !user.isPresent() || user.get() == null)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
@@ -142,7 +143,7 @@ public class TodoController
     {
         Optional<UserEntity> user = userRepository.findById(id);
 
-        if (user == null || user.get() == null)
+        if (user == null || !user.isPresent() || user.get() == null)
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
@@ -193,7 +194,7 @@ public class TodoController
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
-        
+
         if (to < from)
         {
             response.setStatus(420);

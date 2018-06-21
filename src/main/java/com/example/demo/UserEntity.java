@@ -2,6 +2,8 @@ package com.example.demo;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,12 +12,18 @@ import javax.persistence.OneToMany;
 @Entity
 public class UserEntity
 {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
+    @Column(name = "id")
     private Long id;
+
+    @Column(name = "email")
     private String email;
+
+    @Column(name = "password")
     private String password;
 
-    @OneToMany(targetEntity = TodoEntity.class)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<TodoEntity> todoList;
 
     public Long getId() { return id; }
