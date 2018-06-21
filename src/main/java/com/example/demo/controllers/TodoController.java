@@ -109,8 +109,8 @@ public class TodoController
     @Autowired
     UserRepository userRepository;
 
-    @PutMapping("/api/todo/add/{id}")
-    public Object add(@PathVariable("id") long id, @RequestBody AddRequestBodyWrapper body, HttpServletResponse response)
+    @PutMapping("/api/todo/add")
+    public Object add(long id, @RequestBody AddRequestBodyWrapper body, HttpServletResponse response)
     {
         Optional<UserEntity> user = userRepository.findById(id);
 
@@ -237,11 +237,11 @@ public class TodoController
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
 
-        if (to < from)
-        {
-            response.setStatus(420);
-            return new ErrorResponseWrapper("To < from");
-        }
+        //if (to < from)
+        //{
+        //    response.setStatus(420);
+        //    return new ErrorResponseWrapper("To < from");
+        //}
 
         return user.get().getTodoList();
     }
