@@ -4,13 +4,8 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 class AddRequestBodyWrapper
 {
@@ -22,7 +17,6 @@ class AddRequestBodyWrapper
 
     public Long getDueDate() { return dueDate; }
     public void setDueDate(Long dueDate) { this.dueDate = dueDate; }
-
 }
 
 class EditRequestBodyWrapper
@@ -71,8 +65,8 @@ public class TodoController
     @Autowired
     UserRepository userRepository;
 
-    @PutMapping("/api/todo/add")
-    public Object add(long id, @RequestBody AddRequestBodyWrapper body, HttpServletResponse response)
+    @PutMapping("/api/todo/add/{id}")
+    public Object add(@PathVariable("id") long id, @RequestBody AddRequestBodyWrapper body, HttpServletResponse response)
     {
         Optional<UserEntity> user = userRepository.findById(id);
 
@@ -86,14 +80,12 @@ public class TodoController
             return new ErrorResponseWrapper("Due date cannot be a past date");
         }
 
-        long newId = IdGenerator.getNextValue();
         TodoEntity todoEntity = new TodoEntity();
-        todoEntity.setId(newId);
         todoEntity.setText(body.getText());
         todoEntity.setDueDate(body.getDueDate());
         todoEntity.setCreationDate(System.currentTimeMillis());
         todoEntity.setStatus(false);
-        todoRepository.save(todoEntity);
+        todoEntity = todoRepository.save(todoEntity);
 
         UserEntity userEntity = user.get();
         userEntity.addTodo(todoEntity);
@@ -108,13 +100,13 @@ public class TodoController
         Optional<UserEntity> user = userRepository.findById(id);
         Optional<TodoEntity> todo = todoRepository.findById(body.getId());
 
-        if (user == null || !user.isPresent() || user.get() == null)
+        if (!user.isPresent())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
 
-        if (todo == null || todo.get() == null)
+        if (!todo.isPresent())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
@@ -126,7 +118,7 @@ public class TodoController
             return new ErrorResponseWrapper("Due date cannot be a past date");
         }
 
-        TodoEntity editedTodoEntity = todoRepository.findById(body.getId()).get();
+        TodoEntity editedTodoEntity = todo.get();
         
         if (body.getText() != null)
             editedTodoEntity.setText(body.getText());
@@ -142,14 +134,15 @@ public class TodoController
     public Object delete(Long id, @RequestBody DeleteRequestBodyWrapper body, HttpServletResponse response)
     {
         Optional<UserEntity> user = userRepository.findById(id);
+        Optional<TodoEntity> todo = todoRepository.findById(id);
 
-        if (user == null || !user.isPresent() || user.get() == null)
+        if (!user.isPresent())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
 
-        if (todoRepository.findById(body.getId()) == null)
+        if (!todo.isPresent())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
@@ -158,7 +151,7 @@ public class TodoController
         todoRepository.deleteById(body.getId());
 
         UserEntity userEntity = user.get();
-        userEntity.getTodoList().removeIf((x) -> x.getId() == body.getId());
+        userEntity.getTodoList().removeIf((x) -> x.getId().equals(body.getId()));
         userRepository.save(userEntity);
 
         return "success";

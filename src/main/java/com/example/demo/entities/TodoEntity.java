@@ -1,17 +1,12 @@
 package com.example.demo;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class TodoEntity
 {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
     private String text;
@@ -23,14 +18,14 @@ public class TodoEntity
     private Long dueDate;
 
     //@ManyToOne
-    //@Column(name = "user")
+    //@Column(name = "assignedUser")
     //@JoinColumn(name = "id")
-    //private UserEntity user;
+    //private UserEntity assignedUser;
     @ManyToOne
-    private UserEntity user;
+    private UserEntity assignedUser;
 
-    public UserEntity getUser() { return user; }
-    public void setUser(UserEntity user) { this.user = user; }
+    public UserEntity getAssignedUser() { return assignedUser; }
+    public void setAssignedUser(UserEntity assignedUser) { this.assignedUser = assignedUser; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }

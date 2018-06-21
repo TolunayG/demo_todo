@@ -9,52 +9,19 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 class LoginRequestBodyWrapper
 {
-    private String email;
-    private String password;
-
-	public String getEmail() {
-		return email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    String email;
+    String password;
 }
 
 class LoginResponseBodyWrapper
 {
-    private long id;
-
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
+    long id;
 }
 
 class RegisterRequestWrapper
 {
-    private String email;
-    private String password;
-
-	public String getEmail() {
-		return email;
-	}
-	public void setEmail(String email) {
-		this.email = email;
-	}
-	public String getPassword() {
-		return password;
-	}
-	public void setPassword(String password) {
-		this.password = password;
-    }
+    String email;
+    String password;
 }
 
 @RestController
@@ -66,14 +33,14 @@ public class UserController
     @PostMapping("/api/user/login")
     public Object login(@RequestBody LoginRequestBodyWrapper body, HttpServletResponse response)
     {
-        if (body.getEmail() == null) {
+        if (body.email == null || body.email.length() == 0) {
             response.setStatus(420);
             return new ErrorResponseWrapper("Email cannot be empty.");
         }
         
-        UserEntity user = userRepository.findByEmail(body.getEmail());
+        UserEntity user = userRepository.findByEmail(body.email);
 
-        if (body.getPassword() == null) {
+        if (body.password == null || body.password.length() == 0) {
             response.setStatus(420);
             return new ErrorResponseWrapper("Password cannot be empty.");
         }
@@ -83,21 +50,21 @@ public class UserController
             return new ErrorResponseWrapper("No such email");
         }
                     
-        if (!user.getPassword().equals(body.getPassword())) {
+        if (!user.getPassword().equals(body.password)) {
             response.setStatus(420);
             return new ErrorResponseWrapper("Password is incorrect.");
         }
             
         LoginResponseBodyWrapper responseBodyWrapper = new LoginResponseBodyWrapper();
-        responseBodyWrapper.setId(user.getId());
+        responseBodyWrapper.id = user.getId();
         return responseBodyWrapper;
     }
 
     @PostMapping("/api/user/register")
     public Object register(@RequestBody RegisterRequestWrapper body, HttpServletResponse response)
     {
-        String email = body.getEmail();
-        String password = body.getPassword();
+        String email = body.email;
+        String password = body.password;
 
         if (email == null || email.length() == 0) {
             response.setStatus(420);
@@ -116,8 +83,8 @@ public class UserController
         
         user = new UserEntity();
         user.setId(0L);
-        user.setEmail(body.getEmail());
-        user.setPassword(body.getPassword());
+        user.setEmail(body.email);
+        user.setPassword(body.password);
         userRepository.save(user);
 
         return "success";
