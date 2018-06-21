@@ -22,10 +22,6 @@ public class TodoEntity
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date dueDate;
 
-    //@ManyToOne
-    //@Column(name = "assignedUser")
-    //@JoinColumn(name = "id")
-    //private UserEntity assignedUser;
     @ManyToOne
     private UserEntity assignedUser;
 
