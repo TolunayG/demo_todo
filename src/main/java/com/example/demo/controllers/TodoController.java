@@ -1,9 +1,14 @@
-package com.example.demo;
+package com.example.demo.controllers;
 
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
 
+import com.example.demo.ErrorResponseWrapper;
+import com.example.demo.entities.TodoEntity;
+import com.example.demo.entities.UserEntity;
+import com.example.demo.repositories.TodoRepository;
+import com.example.demo.repositories.UserRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -12,11 +17,21 @@ class AddRequestBodyWrapper
     private String text;
     private Long dueDate;
 
-    public String getText() { return text; }
-    public void setText(String text) { this.text = text; }
+    String getText() {
+        return text;
+    }
 
-    public Long getDueDate() { return dueDate; }
-    public void setDueDate(Long dueDate) { this.dueDate = dueDate; }
+    void setText(String text) {
+        this.text = text;
+    }
+
+    Long getDueDate() {
+        return dueDate;
+    }
+
+    void setDueDate(Long dueDate) {
+        this.dueDate = dueDate;
+    }
 }
 
 class EditRequestBodyWrapper
@@ -25,35 +40,64 @@ class EditRequestBodyWrapper
     private String text;
     private Long dueDate;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    Long getId() {
+        return id;
+    }
 
-    public String getText() { return text; }
-	public void setText(String text) { this.text = text; }
+    void setId(Long id) {
+        this.id = id;
+    }
 
-    public Long getDueDate() { return dueDate; }
-    public void setDueDate(Long dueDate) { this.dueDate = dueDate; }
+    String getText() {
+        return text;
+    }
 
+    void setText(String text) {
+        this.text = text;
+    }
+
+    Long getDueDate() {
+        return dueDate;
+    }
+
+    void setDueDate(Long dueDate) {
+        this.dueDate = dueDate;
+    }
 }
 
 class DeleteRequestBodyWrapper
 {
     private Long id;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    Long getId() {
+        return id;
+    }
+
+    void setId(Long id) {
+        this.id = id;
+    }
 }
 
 class CheckRequestBodyWrapper
 {
-    private Long id;
+    private long id;
     private boolean status;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public long getId() {
+        return id;
+    }
 
-    public boolean getStatus() { return status; }
-    public void setStatus(boolean status) { this.status = status; }
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(boolean status) {
+        this.status = status;
+    }
 }
 
 @RestController
@@ -70,7 +114,7 @@ public class TodoController
     {
         Optional<UserEntity> user = userRepository.findById(id);
 
-        if (user == null || !user.isPresent() || user.get() == null) {
+        if (!user.isPresent()) {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
@@ -160,21 +204,24 @@ public class TodoController
     @PostMapping("/api/todo/check")
     public Object check(Long id, @RequestBody CheckRequestBodyWrapper body, HttpServletResponse response)
     {
-        if (userRepository.findById(id) == null)
+        Optional<UserEntity> user = userRepository.findById(id);
+        Optional<TodoEntity> todo = todoRepository.findById(id);
+
+        if (!user.isPresent())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
         }
 
-        if (todoRepository.findById(body.getId()) == null)
+        if (!todo.isPresent())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
         }
 
-        TodoEntity editedTodoEntity = todoRepository.findById(body.getId()).get();
-        editedTodoEntity.setStatus(body.getStatus());
-        todoRepository.save(editedTodoEntity);
+        TodoEntity entity = todo.get();
+        entity.setStatus(body.getStatus());
+        todoRepository.save(entity);
 
         return "success";
     }
@@ -182,7 +229,9 @@ public class TodoController
     @GetMapping("/api/todo/list")
     public Object list(Long id, Long from, Long to, HttpServletResponse response)
     {
-        if (userRepository.findById(id) == null)
+        Optional<UserEntity> user = userRepository.findById(id);
+
+        if (!user.isPresent())
         {
             response.setStatus(420);
             return new ErrorResponseWrapper("User does not exist. (wrong id)");
@@ -194,6 +243,6 @@ public class TodoController
             return new ErrorResponseWrapper("To < from");
         }
 
-        return userRepository.findById(id).get().getTodoList();
+        return user.get().getTodoList();
     }
 }
