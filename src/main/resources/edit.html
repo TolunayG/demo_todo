@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<table>
+    <tr>
+        <th>To Do</th>
+        <th>Due Date</th>
+        <th></th>
+    </tr>
+    <tr>
+        <th><textarea id="field_text" rows="3" cols="50">{{{REPLACE_TEXT}}}</textarea></th>
+        <th><input id="field_dueDate" type="text" value="{{{REPLACE_DUEDATE}}}" placeholder="Text"></th>
+        <th><button class="button button2" onclick="clicked()">Edit</button></th>
+    </tr>
+</table>
+
+</body>
+<script>
+    function clicked() {
+        var text = document.getElementById("field_text").value;
+        var date = document.getElementById("field_dueDate").value;
+
+        var xhr = new XMLHttpRequest();
+        var url = "/api/todo/edit?id=" + "{{{REPLACE_USER_ID}}}";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    window.location="/list?id={{{REPLACE_USER_ID}}}";
+                }
+                else {
+                    alert(xhr.responseText);
+                }
+            }
+        };
+
+        var data = JSON.stringify({"id" : {{{REPLACE_TODO_ID}}}, "text" : text, "dueDate": date});
+        xhr.send(data);
+    }
+</script>
+</html>

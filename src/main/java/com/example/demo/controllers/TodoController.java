@@ -101,6 +101,19 @@ class CheckRequestBodyWrapper
     }
 }
 
+class ToggleRequestBodyWrapper
+{
+    private long id;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+}
+
 @RestController
 public class TodoController
 {
@@ -221,6 +234,31 @@ public class TodoController
 
         TodoEntity entity = todo.get();
         entity.setStatus(body.getStatus());
+        todoRepository.save(entity);
+
+        return "success";
+    }
+
+    @PostMapping("/api/todo/toggle")
+    public Object toggle(Long id, @RequestBody ToggleRequestBodyWrapper body, HttpServletResponse response)
+    {
+        Optional<UserEntity> user = userRepository.findById(id);
+        Optional<TodoEntity> todo = todoRepository.findById(body.getId());
+
+        if (!user.isPresent())
+        {
+            response.setStatus(420);
+            return new ErrorResponseWrapper("User does not exist. (wrong id)");
+        }
+
+        if (!todo.isPresent())
+        {
+            response.setStatus(420);
+            return new ErrorResponseWrapper("Todo item does not exist. (wrong id)");
+        }
+
+        TodoEntity entity = todo.get();
+        entity.setStatus(!entity.getStatus());
         todoRepository.save(entity);
 
         return "success";
