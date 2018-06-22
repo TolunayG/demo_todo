@@ -3,8 +3,12 @@ package com.example.demo.controllers;
 import javax.servlet.http.HttpServletResponse;
 
 import com.example.demo.ErrorResponseWrapper;
+import com.example.demo.Utils;
 import com.example.demo.entities.UserEntity;
 import com.example.demo.repositories.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,11 +41,11 @@ class LoginResponseBodyWrapper
 {
     private long id;
 
-    long getId() {
+    public long getId() {
         return id;
     }
 
-    void setId(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 }
@@ -74,7 +78,7 @@ public class UserController
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/api/user/login")
+    @PostMapping(value = "/api/user/login")
     public Object login(@RequestBody LoginRequestBodyWrapper body, HttpServletResponse response)
     {
         if (body.getEmail() == null || body.getEmail().length() == 0) {
@@ -98,9 +102,10 @@ public class UserController
             response.setStatus(420);
             return new ErrorResponseWrapper("Password is incorrect.");
         }
-            
+
         LoginResponseBodyWrapper responseBodyWrapper = new LoginResponseBodyWrapper();
         responseBodyWrapper.setId(user.getId());
+
         return responseBodyWrapper;
     }
 

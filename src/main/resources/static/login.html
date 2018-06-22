@@ -21,13 +21,15 @@
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     var json = JSON.parse(xhr.responseText);
-                    alert(json.email + ", " + json.password);
+                    //alert(xhr.responseText);
+                    window.location="/list?id="+json.id;
                 }
                 else {
                     alert(xhr.responseText);
                 }
             }
         };
+
         var data = JSON.stringify({"email": email, "password": pass});
         xhr.send(data);
     }
