@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<input id="field_email" type="text" value="" placeholder="E-mail"> <br>
+<input id="field_pass" type="text" value="" placeholder="Password"> <br>
+<br>
+<button onclick="loginClicked()">Login</button>
+
+
+<script>
+    function loginClicked() {
+        var email = document.getElementById("field_email").value;
+        var pass = document.getElementById("field_pass").value;
+
+        var xhr = new XMLHttpRequest();
+        var url = "/api/user/login";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var json = JSON.parse(xhr.responseText);
+                alert(json.email + ", " + json.password);
+            }
+            else
+                alert(xhr.status);
+        };
+        var data = JSON.stringify({"email": "hey@mail.com", "password": "101010"});
+        xhr.send(data);
+    }
+
+</script>
+
+</body>
+</html>
