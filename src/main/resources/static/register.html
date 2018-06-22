@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<input id="field_email" type="text" value="" placeholder="E-mail"> <br>
+<input id="field_pass" type="text" value="" placeholder="Password"> <br>
+<br>
+<button onclick="registerClicked()">Register</button>
+
+
+<script>
+    function registerClicked() {
+        var email = document.getElementById("field_email").value;
+        var pass = document.getElementById("field_pass").value;
+
+        var xhr = new XMLHttpRequest();
+        var url = "/api/user/register";
+        xhr.open("POST", url, true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    //var json = JSON.parse(xhr.responseText);
+                    //alert(json  +" ");
+                    alert(xhr.responseText);
+                }
+                else {
+                    alert(xhr.responseText);
+                }
+            }
+        };
+        var data = JSON.stringify({"email": email, "password": pass});
+        xhr.send(data);
+    }
+
+</script>
+
+</body>
+</html>
